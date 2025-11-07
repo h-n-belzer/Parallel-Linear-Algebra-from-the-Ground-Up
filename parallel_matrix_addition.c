@@ -8,11 +8,10 @@
 #define ROWS 4
 #define COLUMNS 4
 
-int matrix_addition(int A[ROWS][COLUMNS], int B[ROWS][COLUMNS], int rank) {
+int matrix_addition(int A[ROWS][COLUMNS], int B[ROWS][COLUMNS], int i) {
 	int local_sum = 0;
 
-	// Each process does a separate row
-	int i = rank;
+	// Each process does a separate row, so rather than an outer loop, we just have i = rank
 	
 	for (int j = 0; j < COLUMNS; j++) {
 		local_sum += A[i][j] + B[i][j];
@@ -46,7 +45,7 @@ int main(int argc, char* argv[]) {
     MPI_Reduce(&local_sum, &total_sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
 
     if (my_rank == 0) {
-        printf("The result of matrix A added to matrix B is %d\n", total_sum);
+        printf("The sum of all elements in (A + B) is %d\n", total_sum);
     }
 
     MPI_Finalize();
